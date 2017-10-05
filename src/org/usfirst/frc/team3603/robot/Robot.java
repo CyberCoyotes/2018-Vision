@@ -21,7 +21,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		SmartDashboard.putString("Keys", vision.getKeys());
 		SmartDashboard.putNumber("Vision", vision.getSpeed());
-		if(vision.getSpeed() == -5) {
+		if(!vision.isWorking()) {
 			vision.retry();
 		}
 	}
