@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.tables.TableKeyNotDefinedException;
 public class Vision {
 	NetworkTable table;
 	boolean working;
-	double[] def = {0.0};
 	
 	public Vision() {
 		table = NetworkTable.getTable("GRIP/cyberVision");
