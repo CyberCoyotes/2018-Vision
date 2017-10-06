@@ -8,15 +8,18 @@ import edu.wpi.first.wpilibj.tables.TableKeyNotDefinedException;
 
 @SuppressWarnings("deprecation")
 public class Vision {
-	NetworkTable table;
+	NetworkTable table; //Create a table
 	boolean working;
 	
 	public Vision() {
-		table = NetworkTable.getTable("GRIP/cyberVision");
+		table = NetworkTable.getTable("GRIP/cyberVision"); //Begin the table with a key
+		
+		//See if there are keys in the table
 		Set<String> string = table.getKeys();
 		String s = string.toString();
 		working = (boolean) s.equals("[]") ? false : true;
-		SmartDashboard.putString("Keys", s);
+		
+		SmartDashboard.putString("Keys", s); //Publish the keys
 	}
 	
 	public boolean isWorking() {
@@ -28,13 +31,24 @@ public class Vision {
 	
 	public double getX() {
 		try {
-			double[] x = table.getNumberArray("centerX");
-			return x[0];
-		} catch(TableKeyNotDefinedException ex) {
+			double[] x = table.getNumberArray("centerX"); //get the x values from the Kangaroo
+			if(x.length != 0) { //If there are more than one x value...
+				int numObjects = x.length; //Get the number of x's
+				double average = 0; //Create an integer
+				for(int obj = 0; obj < numObjects; obj++) {
+					average = average + x[obj]; //Add all of the x values
+				}
+				average = average/numObjects; //Find the average x value
+				return average;
+			} else { //Otherwise there are no contours
+				SmartDashboard.putString("Vision Status", "No contours");
+				return -5;
+			}
+		} catch(TableKeyNotDefinedException ex) { //If the key doesn't exist...
 			ex.printStackTrace();
 			SmartDashboard.putString("Vision Status", "Table key not defined");
 			return -3;
-		} catch(ArrayIndexOutOfBoundsException ex) {
+		} catch(ArrayIndexOutOfBoundsException ex) { //If there aren't any values
 			ex.printStackTrace();
 			SmartDashboard.putString("Vision Status", "Array index out of bounds");
 			return -4;
@@ -51,7 +65,8 @@ public class Vision {
 					average = average + x[obj];
 				}
 				average = average/numObjects;
-				return average;
+				double speed = average*0.003125-1; //Scale the average between -1 and 1
+				return speed;
 			} else {
 				SmartDashboard.putString("Vision Status", "Too many contours");
 				return -5;
@@ -69,6 +84,7 @@ public class Vision {
 	}
 	
 	public double[] get(String key) {
+		//Gets all of the data for a specific key
 		try {
 			return table.getNumberArray(key);
 		} catch(TableKeyNotDefinedException ex) {
@@ -78,13 +94,13 @@ public class Vision {
 		}
 	}
 	
-	public String getKeys() {
+	public String getKeys() { //Gives a list of keys
 		Set<String> string = table.getKeys();
 		String s = string.toString();
 		return s;
 	}
 	
-	public double getNumContours() {
+	public double getNumContours() { //Gives how many contours are found
 		try {
 			double[] x = table.getNumberArray("centerX");
 			return x.length;
@@ -95,7 +111,7 @@ public class Vision {
 		}
 	}
 	
-	public void retry() {
+	public void retry() { //Restart vision
 		table = NetworkTable.getTable("GRIP/cyberCoyotes");
 		Set<String> string = table.getKeys();
 		String s = string.toString();
