@@ -1,7 +1,5 @@
 package org.usfirst.frc.team3603.robot;
 
-import com.ctre.CANTalon;
-
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -18,8 +16,6 @@ public class Robot extends IterativeRobot {
 	Victor frontLeft = new Victor(3);
 	Victor frontRight = new Victor(4);
 	RobotDrive mainDrive = new RobotDrive(frontLeft, backLeft, frontRight, backRight);
-	
-	double speed = 0; //Variable for testing the minimum turn speed
 	
 	Joystick joy1 = new Joystick(0); //Controller
 	
@@ -49,8 +45,8 @@ public class Robot extends IterativeRobot {
 		}
 		
 		//Testing to see the minimum turn speed
-		if(joy1.getRawAxis(0) > 0.1 || joy1.getRawAxis(0) < -0.1) {
-			mainDrive.mecanumDrive_Cartesian(0, 0, joy1.getRawAxis(0), 0);
+		if(Math.abs(joy1.getRawAxis(0)) >= 0.5 || Math.abs(joy1.getRawAxis(1)) >= 0.5 || Math.abs(joy1.getRawAxis(4)) >= 0.5) {
+			mainDrive.mecanumDrive_Cartesian(joy1.getRawAxis(0), joy1.getRawAxis(1), joy1.getRawAxis(4), 0);
 		} else if(joy1.getRawButton(1) && vision.getSpeed() != -5) {
 			mainDrive.mecanumDrive_Cartesian(0, vision.getFSpeed(), vision.getSpeed(), 0);
 		} else {

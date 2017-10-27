@@ -4,7 +4,6 @@ import java.util.Set;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.tables.ITableListener;
 import edu.wpi.first.wpilibj.tables.TableKeyNotDefinedException;
 
 @SuppressWarnings("deprecation")
@@ -102,7 +101,7 @@ public class Vision {
 				}
 				return speed;
 			} else {
-				SmartDashboard.putString("Vision Status", "Too many contours");
+				SmartDashboard.putString("Vision Status", "No contours");
 				return 0;
 			}
 			
