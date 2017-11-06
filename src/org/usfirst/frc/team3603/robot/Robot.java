@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 	
+	int f_min = 37;
+	int f_max = 43;
+	double f_speed = 0.2;
+	
 	Vision vision = new Vision(); //The vision processor object
 	
 	//Drive stuff
@@ -35,11 +39,6 @@ public class Robot extends IterativeRobot {
 	}
 	@Override
 	public void teleopPeriodic() {
-		SmartDashboard.putString("Keys", vision.getKeys()); //Publish the NetworkTables keys
-		SmartDashboard.putNumber("Vision", vision.getX()); //Publish the center X
-		SmartDashboard.putNumber("Height", vision.getHeight());
-		SmartDashboard.putNumber("Distance", vision.getDistance());
-		
 		if(!vision.isWorking()) { //Test to see if this works for checking if it's working
 			vision.retry(); //Restart the vision
 		}
@@ -47,14 +46,25 @@ public class Robot extends IterativeRobot {
 		//Testing to see the minimum turn speed
 		if(Math.abs(joy1.getRawAxis(0)) >= 0.5 || Math.abs(joy1.getRawAxis(1)) >= 0.5 || Math.abs(joy1.getRawAxis(4)) >= 0.5) {
 			mainDrive.mecanumDrive_Cartesian(joy1.getRawAxis(0), joy1.getRawAxis(1), joy1.getRawAxis(4), 0);
-		} else if(joy1.getRawButton(1) && vision.getSpeed() != -5) {
-			mainDrive.mecanumDrive_Cartesian(0, vision.getFSpeed(), vision.getSpeed(), 0);
+		} else if(joy1.getRawButton(1) && vision.getRotationSpeed() != -5) {
+			mainDrive.mecanumDrive_Cartesian(0, vision.getForwardSpeed(f_min, f_max, f_speed), vision.getRotationSpeed(), 0);
 		} else {
 			mainDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
 		}
 		
-		SmartDashboard.putNumber("Speed", vision.getSpeed()); //Publish the turn speed
+		read();
 	}
+	
+	void read() {
+		SmartDashboard.putString("Keys", vision.getKeys()); //Publish the NetworkTables keys
+		SmartDashboard.putBoolean("Working", vision.isWorking());
+		SmartDashboard.putNumber("Vision", vision.getX()); //Publish the center X
+		SmartDashboard.putNumber("Height", vision.getHeight());
+		SmartDashboard.putNumber("Distance", vision.getDistance());
+		SmartDashboard.putNumber("Rotation Speed", vision.getRotationSpeed()); //Publish the turn speed
+		SmartDashboard.putNumber("Forward Speed", vision.getForwardSpeed(f_min, f_max, f_speed));
+	}
+	
 	@Override
 	public void testPeriodic() {
 	}

@@ -55,15 +55,29 @@ public class Vision {
 		}
 	}
 	
-	public double getFSpeed() {
+	
+	/**
+	 * This function takes the height of the contour and 
+	 * processes it into distance. It then gives an adj-
+	 * ustment speed in relation to how far off it is.
+	 * @return The adjustment speed.
+	 */
+	public double getForwardSpeed(int min, int max, double speed) {
+		min = Math.abs(min);
+		max = Math.abs(max);
+		if(min>max) {
+			int save = min;
+			min = max;
+			max = save;
+		}
 		try {
 			double[] x = table.getNumberArray("height");
 			if(x.length!=0) {
 				double distance = 64.08 * Math.pow(Math.E, -0.016*x[0]);
-				if(distance > 43) {
-					return -0.2;
-				} else if(distance < 37) {
-					return 0.2;
+				if(distance > max) {
+					return -speed;
+				} else if(distance < min) {
+					return speed;
 				} else {
 					return 0;
 				}
@@ -81,7 +95,7 @@ public class Vision {
 		}
 	}
 	
-	public double getSpeed() {
+	public double getRotationSpeed() {
 		try {
 			double[] x = table.getNumberArray("centerX");
 			if(x.length != 0) {
@@ -155,33 +169,10 @@ public class Vision {
 		}
 	}
 	
-	
-	public double[] get(String key) {
-		//Gets all of the data for a specific key
-		try {
-			return table.getNumberArray(key);
-		} catch(TableKeyNotDefinedException ex) {
-			ex.printStackTrace();
-			SmartDashboard.putString("Vision Status", "Table key not defined: " + key);
-			return null;
-		}
-	}
-	
 	public String getKeys() { //Gives a list of keys
 		Set<String> string = table.getKeys();
 		String s = string.toString();
 		return s;
-	}
-	
-	public double getNumContours() { //Gives how many contours are found
-		try {
-			double[] x = table.getNumberArray("centerX");
-			return x.length;
-		} catch (TableKeyNotDefinedException ex){
-			ex.printStackTrace();
-			SmartDashboard.putString("Vision Status", "Table key not defined");
-			return 0;
-		}
 	}
 	
 	public void retry() { //Restart vision
