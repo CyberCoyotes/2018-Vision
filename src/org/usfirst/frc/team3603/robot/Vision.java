@@ -22,6 +22,10 @@ public class Vision {
 		SmartDashboard.putString("Keys", s); //Publish the keys
 	}
 	
+	/**
+	 * It sees if the network table has keys to test if the table exists.
+	 * @return Boolean representing if it's working or not
+	 */
 	public boolean isWorking() {
 		Set<String> string = table.getKeys();
 		String s = string.toString();
@@ -29,6 +33,10 @@ public class Vision {
 		return working;
 	}
 	
+	/**
+	 * Gives the average x position of all of the contours within the field of view
+	 * @return The position in pixels
+	 */
 	public double getX() {
 		try {
 			double[] x = table.getNumberArray("centerX"); //get the x values from the Kangaroo
@@ -58,8 +66,10 @@ public class Vision {
 	
 	/**
 	 * This function takes the height of the contour and 
-	 * processes it into distance. It then gives an adj-
-	 * ustment speed in relation to how far off it is.
+	 * processes it into distance. It then gives an adjustment speed in relation to how far off it is.
+	 * @param min The minimum allowable distance
+	 * @param max The maximum allowable distance
+	 * @param speed The adjustment speed
 	 * @return The adjustment speed.
 	 */
 	public double getForwardSpeed(int min, int max, double speed) {
@@ -73,7 +83,7 @@ public class Vision {
 		try {
 			double[] x = table.getNumberArray("height");
 			if(x.length!=0) {
-				double distance = 64.08 * Math.pow(Math.E, -0.016*x[0]);
+				double distance = 1440/x[0];
 				if(distance > max) {
 					return -speed;
 				} else if(distance < min) {
@@ -95,6 +105,10 @@ public class Vision {
 		}
 	}
 	
+	/**
+	 * Calculates how the robot should adjust to center the vision target to its field of view
+	 * @return The adjustment rotational speed
+	 */
 	public double getRotationSpeed() {
 		try {
 			double[] x = table.getNumberArray("centerX");
@@ -106,9 +120,9 @@ public class Vision {
 				}
 				average = average/numObjects;
 				double speed = average*0.003125-1; //Scale the average between -1 and 1
-				if(speed > 0.15) {
+				if(speed > 0.2) {
 					speed = 0.15;
-				} else if(speed < -0.15) {
+				} else if(speed < -0.2) {
 					speed = -0.15;
 				} else {
 					speed = 0;
@@ -130,11 +144,15 @@ public class Vision {
 		}
 	}
 	
+	/**
+	 * Calculates how far an object is based on the perceived height and the known height.
+	 * @return Distance in inches
+	 */
 	public double getDistance() {
 		try {
 			double[] x = table.getNumberArray("height");
 			if(x.length!=0) {
-				double distance = 64.08 * Math.pow(Math.E, -0.016*x[0]);
+				double distance = 1440/x[0];
 				return distance;
 			} else {
 				return 0;
@@ -150,6 +168,10 @@ public class Vision {
 		}
 	}
 	
+	/**
+	 * Gives the height of the contour in pixels
+	 * @return Height in pixels
+	 */
 	public double getHeight() {
 		try {
 			double[] x = table.getNumberArray("height");
@@ -169,12 +191,19 @@ public class Vision {
 		}
 	}
 	
+	/**
+	 * Says what keys exist within a table
+	 * @return A list of keys in one String
+	 */
 	public String getKeys() { //Gives a list of keys
 		Set<String> string = table.getKeys();
 		String s = string.toString();
 		return s;
 	}
 	
+	/**
+	 * Retries the table setting
+	 */
 	public void retry() { //Restart vision
 		table = NetworkTable.getTable("GRIP/cyberCoyotes");
 		Set<String> string = table.getKeys();

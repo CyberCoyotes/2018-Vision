@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 	
-	int f_min = 37;
-	int f_max = 43;
-	double f_speed = 0.2;
+	int f_min = 30;
+	int f_max = 42;
+	double f_speed = 0.3;
 	
 	Vision vision = new Vision(); //The vision processor object
 	
