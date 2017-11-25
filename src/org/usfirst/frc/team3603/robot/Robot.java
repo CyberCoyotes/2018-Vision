@@ -39,14 +39,15 @@ public class Robot extends IterativeRobot {
 	}
 	@Override
 	public void teleopPeriodic() {
-		if(!vision.isWorking()) { //Test to see if this works for checking if it's working
+		if(!vision.isContours()) { //Test to see if this works for checking if it's working
 			vision.retry(); //Restart the vision
 		}
 		
-		//Testing to see the minimum turn speed
-		if(Math.abs(joy1.getRawAxis(0)) >= 0.5 || Math.abs(joy1.getRawAxis(1)) >= 0.5 || Math.abs(joy1.getRawAxis(4)) >= 0.5) {
+		if(joy1.getRawButton(2) && Math.abs(joy1.getRawAxis(1)) >= 0.15 && vision.isContours()) {
+			mainDrive.mecanumDrive_Cartesian(0, Math.pow(joy1.getRawAxis(1), 3), vision.getRotationSpeed(), 0);
+		} else if(Math.abs(joy1.getRawAxis(0)) >= 0.5 || Math.abs(joy1.getRawAxis(1)) >= 0.5 || Math.abs(joy1.getRawAxis(4)) >= 0.5) {
 			mainDrive.mecanumDrive_Cartesian(joy1.getRawAxis(0), joy1.getRawAxis(1), joy1.getRawAxis(4), 0);
-		} else if(joy1.getRawButton(1) && vision.getRotationSpeed() != -5) {
+		} else if(joy1.getRawButton(1) && vision.isContours()) {
 			mainDrive.mecanumDrive_Cartesian(0, vision.getForwardSpeed(f_min, f_max, f_speed), vision.getRotationSpeed(), 0);
 		} else {
 			mainDrive.mecanumDrive_Cartesian(0, 0, 0, 0);
@@ -57,7 +58,7 @@ public class Robot extends IterativeRobot {
 	
 	void read() {
 		SmartDashboard.putString("Keys", vision.getKeys()); //Publish the NetworkTables keys
-		SmartDashboard.putBoolean("Working", vision.isWorking());
+		SmartDashboard.putBoolean("", vision.isContours());
 		SmartDashboard.putNumber("Vision", vision.getX()); //Publish the center X
 		SmartDashboard.putNumber("Height", vision.getHeight());
 		SmartDashboard.putNumber("Distance", vision.getDistance());

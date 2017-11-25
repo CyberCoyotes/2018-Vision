@@ -26,10 +26,20 @@ public class Vision {
 	 * It sees if the network table has keys to test if the table exists.
 	 * @return Boolean representing if it's working or not
 	 */
-	public boolean isWorking() {
-		Set<String> string = table.getKeys();
-		String s = string.toString();
-		working = (boolean) s.equals("[]") ? false : true;
+	public boolean isContours() {
+		try {
+			double[] x = table.getNumberArray("centerX");
+			if(x.length == 0) {
+				working = false;
+			} else {
+				working = true;
+			}
+		} catch(TableKeyNotDefinedException ex) { //If the key doesn't exist...
+			ex.printStackTrace();
+			SmartDashboard.putString("Vision Status", "Table key not defined");
+			working = false;
+		}
+		
 		return working;
 	}
 	
@@ -75,12 +85,15 @@ public class Vision {
 	public double getForwardSpeed(int min, int max, double speed) {
 		min = Math.abs(min);
 		max = Math.abs(max);
+		
 		if(min>max) {
 			int save = min;
 			min = max;
 			max = save;
 		}
+		
 		try {
+			
 			double[] x = table.getNumberArray("height");
 			if(x.length!=0) {
 				double distance = 1440/x[0];
@@ -94,10 +107,12 @@ public class Vision {
 			} else {
 				return 0;
 			}
+			
 		} catch(TableKeyNotDefinedException ex) {
 			ex.printStackTrace();
 			SmartDashboard.putString("Vision Status", "Table key not defined");
 			return 0;
+			
 		} catch(ArrayIndexOutOfBoundsException ex) {
 			ex.printStackTrace();
 			SmartDashboard.putString("Vision Status", "Array index out of bounds");
