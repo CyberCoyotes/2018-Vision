@@ -57,9 +57,9 @@ public class Robot extends IterativeRobot {
 	}
 	
 	void read() {
-		SmartDashboard.putString("Keys", vision.getKeys()); //Publish the NetworkTables keys
+		SmartDashboard.putString("Keys", vision.getKeys());
 		SmartDashboard.putBoolean("", vision.isContours());
-		SmartDashboard.putNumber("Vision", vision.getX()); //Publish the center X
+		SmartDashboard.putNumber("Vision", vision.getX());
 		SmartDashboard.putNumber("Height", vision.getHeight());
 		SmartDashboard.putNumber("Distance", vision.getDistance());
 		SmartDashboard.putNumber("Rotation Speed", vision.getRotationSpeed()); //Publish the turn speed
