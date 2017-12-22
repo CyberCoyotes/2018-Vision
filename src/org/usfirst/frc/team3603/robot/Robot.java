@@ -1,6 +1,5 @@
 package org.usfirst.frc.team3603.robot;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -9,7 +8,7 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
-	
+	//
 	int f_min = 40;
 	int f_max = 52;
 	double f_speed = 0.25;
@@ -27,8 +26,6 @@ public class Robot extends IterativeRobot {
 	
 	Servo servo = new Servo(0);
 	
-	DoubleSolenoid lights = new DoubleSolenoid(0, 1);
-	
 	boolean light = true;
 	
 	@Override
@@ -40,8 +37,6 @@ public class Robot extends IterativeRobot {
 		mainDrive.setSafetyEnabled(false);
 		
 		servo.setPosition(0.5);
-		
-		lights.set(DoubleSolenoid.Value.kForward);
 	}
 	@Override
 	public void autonomousInit() {
@@ -61,16 +56,13 @@ public class Robot extends IterativeRobot {
 		} else {
 			lights.set(DoubleSolenoid.Value.kOff);
 		} */
-		
-		lights.set(DoubleSolenoid.Value.kForward);
-		
 		if(!vision.isWorking()) { //Test to see if this works for checking if it's working
 			vision.retry(); //Restart the vision
 		}
 		
-		double x = Math.pow(joy1.getRawAxis(0), 3);
+		double x = Math.pow(joy1.getRawAxis(4), 3);
 		double y = Math.pow(joy1.getRawAxis(1), 3);
-		double rot = Math.pow(joy1.getRawAxis(4), 3);
+		double rot = Math.pow(joy1.getRawAxis(0), 3);
 		
 		//Testing to see the minimum turn speed
 		if(Math.abs(x) >= 0.05 || Math.abs(y) >= 0.05 || Math.abs(rot) >= 0.05) {
@@ -82,7 +74,7 @@ public class Robot extends IterativeRobot {
 		}
 		
 		if(vision.getX() != -5) {
-			servo.setPosition(0.5*vision.getX() + 0.5);
+			servo.setAngle(90*vision.getX() + 90);
 		} else {
 			servo.setAngle(90);
 		}

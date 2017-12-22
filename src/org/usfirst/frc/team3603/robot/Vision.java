@@ -121,9 +121,9 @@ public class Vision {
 				average = average/numObjects;
 				double speed = average*0.003125-1; //Scale the average between -1 and 1
 				if(speed > 0.2) {
-					speed = 0.175;
+					speed = 0.15;
 				} else if(speed < -0.2) {
-					speed = -0.175;
+					speed = -0.15;
 				} else {
 					speed = 0;
 				}
